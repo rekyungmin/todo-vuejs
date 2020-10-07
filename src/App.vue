@@ -54,13 +54,13 @@ export default {
 
     setViewState(state) {
       this.viewState = state;
-    }
+    },
   },
   computed: {
     filteredTodoList() {
       if (this.viewState === "all") return this.todoList;
       return this.todoList.filter(todo => todo.state === this.viewState);
-    }
+    },
   },
 }
 </script>
