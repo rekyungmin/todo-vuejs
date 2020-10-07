@@ -4,7 +4,7 @@
       <h1>todos</h1>
       <input type="text" autofocus placeholder="What needs to be done?" v-model="newTodoValue" @keyup.enter="pushTodo">
       <div class="todo-list" v-for="(todo, index) in filteredTodoList" :key="index">
-        <input class="todo-complete" type="checkbox" :checked="todo.state === 'completed'" @click="toggleState(index)">
+        <input class="todo-complete" type="checkbox" :checked="todo.isCompleted()" @click="toggleState(todo)">
         <label>{{ todo.value }}</label>
         <button class="todo-delete" @click="popTodo(index)">x</button>
       </div>
@@ -35,11 +35,15 @@ export default {
   },
   methods: {
     pushTodo() {
-      if (this.newTodoValue === "") return;
+      let value = (this.newTodoValue ?? "").trim();
+      if (value.length === 0) return;
 
       this.todoList.push({
-        value: this.newTodoValue,
+        value: value,
         state: "active",
+        isCompleted() {
+          return this.state === "completed";
+        },
       })
       this.newTodoValue = "";
     },
@@ -48,8 +52,8 @@ export default {
       this.todoList.splice(index, 1);
     },
 
-    toggleState(index) {
-      this.todoList[index].state = this.todoList[index].state === "active" ? "completed" : "active";
+    toggleState(todo) {
+      todo.state = todo.isCompleted() ? "active" : "completed";
     },
 
     setViewState(state) {
