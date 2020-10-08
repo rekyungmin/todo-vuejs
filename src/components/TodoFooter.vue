@@ -4,7 +4,7 @@
     <button @click="$emit('switchView', 'all')">All</button>
     <button @click="$emit('switchView', 'active')">Active</button>
     <button @click="$emit('switchView', 'completed')">Completed</button>
-      <button v-if="completedLength > 0" @click="$emit('clearCompletedTodo')">Clear Completed</button>
+    <button v-if="completedLength > 0" @click="$emit('clearCompletedTodo')">Clear Completed</button>
   </div>
 </template>
 
