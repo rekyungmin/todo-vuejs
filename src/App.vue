@@ -88,15 +88,12 @@ export default {
       this.todoList.push(new Todo(value));
       this.newTodoValue = "";
     },
-
     popTodo(index) {
       this.todoList.splice(index, 1);
     },
-
     setViewState(state) {
       this.viewState = state;
     },
-
     clearCompleted() {
       this.todoList = this.activeTodos;
     }
