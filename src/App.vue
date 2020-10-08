@@ -2,18 +2,38 @@
   <div id="app">
     <div>
       <h1>todos</h1>
-      <input type="text" autofocus placeholder="What needs to be done?" v-model="newTodoValue" @keyup.enter="pushTodo">
-      <div class="todo-list" v-for="(todo, index) in filteredTodoList" :key="index">
-        <input class="todo-complete" type="checkbox" :checked="todo.isCompleted()" @click="toggleState(todo)">
+      <div>
+        <input
+            type="text"
+            placeholder="What needs to be done?"
+            autofocus
+            v-model="newTodoValue"
+            @keyup.enter="pushTodo"
+        >
+      </div>
+
+      <div
+          v-for="(todo, index) in viewTodos"
+          :key="index"
+          @mouseenter="todo.hasMousePointer=true"
+          @mouseleave="todo.hasMousePointer=false"
+      >
+        <input
+            type="checkbox"
+            :checked="todo.isCompleted()"
+            @click="todo.toggle()"
+        >
         <label>{{ todo.value }}</label>
-        <button class="todo-delete" @click="popTodo(index)">x</button>
+        <button v-if="todo.hasMousePointer" @click="popTodo(index)">x</button>
       </div>
 
       <div v-if="todoList.length">
         {{ todoList.length }} items left
-        <button class="todo-view" @click="setViewState('all')">All</button>
-        <button class="todo-view" @click="setViewState('active')">Active</button>
-        <button class="todo-view" @click="setViewState('completed')">Completed</button>
+        <button @click="setViewState('all')">All</button>
+        <button @click="setViewState('active')">Active</button>
+        <button @click="setViewState('completed')">Completed</button>
+        <button v-if="completedTodos.length > 0" @click="clearCompleted">Clear Completed</button>
+
       </div>
     </div>
   </div>
@@ -21,10 +41,23 @@
 
 <script>
 
+class Todo {
+  constructor(value, state="active") {
+    this.value = value;
+    this.state = state;
+    this.hasMousePointer = false;
+  }
+  isCompleted() {
+    return this.state === "completed";
+  }
+  toggle() {
+    this.state = this.isCompleted() ? "active" : "completed";
+  }
+}
+
 export default {
   name: 'App',
   components: {
-
   },
   data() {
     return {
@@ -33,18 +66,26 @@ export default {
       newTodoValue: "",
     }
   },
+
+  computed: {
+    viewTodos() {
+      if (this.viewState === "all") return this.todoList;
+      else if (this.viewState === "active") return this.activeTodos;
+      else return this.completedTodos;
+    },
+    activeTodos() {
+      return this.todoList.filter(todo => todo.state === "active");
+    },
+    completedTodos() {
+      return this.todoList.filter(todo => todo.state === "completed");
+    },
+  },
+
   methods: {
     pushTodo() {
       let value = (this.newTodoValue ?? "").trim();
       if (value.length === 0) return;
-
-      this.todoList.push({
-        value: value,
-        state: "active",
-        isCompleted() {
-          return this.state === "completed";
-        },
-      })
+      this.todoList.push(new Todo(value));
       this.newTodoValue = "";
     },
 
@@ -52,19 +93,13 @@ export default {
       this.todoList.splice(index, 1);
     },
 
-    toggleState(todo) {
-      todo.state = todo.isCompleted() ? "active" : "completed";
-    },
-
     setViewState(state) {
       this.viewState = state;
     },
-  },
-  computed: {
-    filteredTodoList() {
-      if (this.viewState === "all") return this.todoList;
-      return this.todoList.filter(todo => todo.state === this.viewState);
-    },
+
+    clearCompleted() {
+      this.todoList = this.activeTodos;
+    }
   },
 }
 </script>
