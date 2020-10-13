@@ -8,14 +8,8 @@
       @mouseleave="todo.hasMousePointer=false"
   >
     <v-list-item>
-      <v-checkbox
-          v-model="todo.isCompletedState"
-      />
-      <label
-          :class="{'todo-completed': todo.isCompletedState}"
-      >
-        {{ todo.value }}
-      </label>
+      <v-checkbox v-model="todo.isCompletedState"/>
+      <label :class="{'todo-completed': todo.isCompletedState}">{{ todo.value }}</label>
       <v-spacer/>
       <v-icon
           medium
