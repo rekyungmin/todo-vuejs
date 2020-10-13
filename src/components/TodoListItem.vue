@@ -3,22 +3,30 @@
 -->
 
 <template>
-  <li
+  <div
       @mouseenter="todo.hasMousePointer=true"
       @mouseleave="todo.hasMousePointer=false"
   >
-    <input
-        type="checkbox"
-        :checked="todo.isCompleted()"
-        @click="todo.toggle()"
-    >
-    <label>{{ todo.value }}</label>
-    <button
-        v-if="todo.hasMousePointer"
-        @click="$emit('removeItem', index)"
-    >x
-    </button>
-  </li>
+    <v-list-item>
+      <v-checkbox
+          v-model="todo.isCompletedState"
+      />
+      <label
+          :class="{'todo-completed': todo.isCompletedState}"
+      >
+        {{ todo.value }}
+      </label>
+      <v-spacer/>
+      <v-icon
+          medium
+          v-if="todo.hasMousePointer"
+          @click="$emit('removeItem', index)"
+      >
+        mdi-alpha-x-circle
+      </v-icon>
+    </v-list-item>
+    <v-divider/>
+  </div>
 </template>
 
 <script>
@@ -29,5 +37,8 @@ export default {
 </script>
 
 <style scoped>
-
+.todo-completed {
+  text-decoration: line-through;
+  color:#d9d9d9;
+}
 </style>

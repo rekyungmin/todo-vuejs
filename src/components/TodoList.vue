@@ -4,22 +4,21 @@
 
 <template>
   <div>
-    <div>
-      <input
-          type="text"
-          placeholder="What needs to be done?"
-          autofocus
-          v-model="newTodoValue"
-          @keyup.enter="pushTodo"
-      >
-    </div>
-    <TodoListItem
-        v-for="(todo, index) in viewTodos"
-        :key="index"
-        :index="index"
-        :todo="todo"
-        @removeItem="popTodo"
+    <v-text-field
+        outlined
+        autofocus
+        placeholder="What needs to be done?"
+        v-model="newTodoValue"
+        @keyup.enter="pushTodo"
     />
+    <div :class="{outline: this.todos.length}">
+      <TodoListItem
+          v-for="(todo, index) in viewTodos"
+          :key="index"
+          :index="index"
+          :todo="todo"
+          @removeItem="popTodo"/>
+    </div>
     <TodoFooter
         v-if="todos.length"
         :activeLength="activeTodos.length"
@@ -34,17 +33,13 @@
 import TodoListItem from "@/components/TodoListItem";
 import TodoFooter from "@/components/TodoFooter";
 
-class Todo {
-  constructor(value, state="active") {
+
+class TodoData {
+  constructor(id, value) {
+    this.id = id;
     this.value = value;
-    this.state = state;
+    this.isCompletedState = false
     this.hasMousePointer = false;
-  }
-  isCompleted() {
-    return this.state === "completed";
-  }
-  toggle() {
-    this.state = this.isCompleted() ? "active" : "completed";
   }
 }
 
@@ -68,17 +63,17 @@ export default {
       else return this.completedTodos;
     },
     activeTodos() {
-      return this.todos.filter(todo => todo.state === "active");
+      return this.todos.filter(todo => !todo.isCompletedState);
     },
     completedTodos() {
-      return this.todos.filter(todo => todo.state === "completed");
+      return this.todos.filter(todo => todo.isCompletedState);
     },
   },
   methods: {
     pushTodo() {
-      let value = (this.newTodoValue ?? "").trim();
+      const value = (this.newTodoValue ?? "").trim();
       if (value.length === 0) return;
-      this.todos.push(new Todo(value));
+      this.todos.push(new TodoData(this.todos.slice(-1).id + 1, value));
       this.newTodoValue = "";
     },
     popTodo(index) {
@@ -95,5 +90,7 @@ export default {
 </script>
 
 <style scoped>
-
+.outline {
+  border: 1px rgba(0, 0, 0, 0.12) solid;
+}
 </style>

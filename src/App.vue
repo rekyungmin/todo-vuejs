@@ -1,8 +1,12 @@
 <template>
-  <div id="app">
-    <h1>todos</h1>
-    <TodoList/>
-  </div>
+  <v-app id="app">
+    <h1 class="mb-10">todos</h1>
+    <v-main>
+      <v-container>
+        <TodoList/>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -24,5 +28,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.container {
+  min-width: 230px;
+  max-width: 550px;
 }
 </style>
